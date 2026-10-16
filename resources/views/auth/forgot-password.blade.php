@@ -73,6 +73,17 @@
             color: var(--muted);
             line-height: 1.6;
         }
+        .reset-link {
+            display: block;
+            margin: -4px 0 16px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--green);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
         .error-box {
             background: rgba(255, 99, 99, 0.12);
             border: 1px solid rgba(255, 99, 99, 0.35);
@@ -96,6 +107,11 @@
 
         @if (session('status'))
             <div class="notice" style="color: #9ef0b4;">{{ session('status') }}</div>
+        @endif
+
+        @if (session('password_reset_link'))
+            <div class="notice">โหมดพัฒนา: คลิกลิงก์นี้เพื่อตั้งรหัสผ่านใหม่</div>
+            <a class="reset-link" href="{{ session('password_reset_link') }}">{{ session('password_reset_link') }}</a>
         @endif
 
         @if ($errors->any())

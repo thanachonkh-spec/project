@@ -1,73 +1,4 @@
-﻿<?php
-$matches = [
-    [
-        'league' => 'Premier League',
-        'short' => 'PL',
-        'home' => 'Arsenal',
-        'away' => 'Liverpool',
-        'home_short' => 'ARS',
-        'away_short' => 'LIV',
-        'home_color' => '#ef4444',
-        'away_color' => '#dc2626',
-        'date' => '18 OCT 2026',
-        'time' => '23:30',
-        'stadium' => 'Emirates Stadium',
-        'price' => 80000,
-        'status' => 'AVAILABLE',
-        'featured' => true,
-    ],
-    [
-        'league' => 'La Liga',
-        'short' => 'LL',
-        'home' => 'Barcelona',
-        'away' => 'Real Madrid',
-        'home_short' => 'BAR',
-        'away_short' => 'RMA',
-        'home_color' => '#2563eb',
-        'away_color' => '#eab308',
-        'date' => '25 OCT 2026',
-        'time' => '02:00',
-        'stadium' => 'Spotify Camp Nou',
-        'price' => 120000,
-        'status' => 'AVAILABLE',
-        'featured' => true,
-    ],
-    [
-        'league' => 'Premier League',
-        'short' => 'PL',
-        'home' => 'Manchester City',
-        'away' => 'Chelsea',
-        'home_short' => 'MCI',
-        'away_short' => 'CHE',
-        'home_color' => '#38bdf8',
-        'away_color' => '#2563eb',
-        'date' => '01 NOV 2026',
-        'time' => '22:30',
-        'stadium' => 'Etihad Stadium',
-        'price' => 70000,
-        'status' => 'AVAILABLE',
-        'featured' => false,
-    ],
-    [
-        'league' => 'La Liga',
-        'short' => 'LL',
-        'home' => 'Atletico Madrid',
-        'away' => 'Sevilla',
-        'home_short' => 'ATM',
-        'away_short' => 'SEV',
-        'home_color' => '#dc2626',
-        'away_color' => '#f8fafc',
-        'date' => '08 NOV 2026',
-        'time' => '00:30',
-        'stadium' => 'Riyadh Air Metropolitano',
-        'price' => 50000,
-        'status' => 'AVAILABLE',
-        'featured' => false,
-    ],
-];
-
-?>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -630,6 +561,7 @@ $matches = [
                 <a href="#">Leagues</a>
                 <a href="#">Stadiums</a>
                 <a href="#">Support</a>
+                <a href="{{ route('dashboard') }}">Dashboard</a>
             </nav>
 
             <div class="nav-actions">
@@ -697,43 +629,43 @@ $matches = [
 
                 <div class="matches-grid">
                     @foreach ($matches as $match)
-                        <article class="match-card @if (!empty($match['featured'])) featured @endif">
+                        <article class="match-card @if ($match->featured) featured @endif">
                             <div class="match-top">
                                 <div class="league">
-                                    <span class="league-badge">{{ $match['short'] }}</span>
-                                    {{ $match['league'] }}
+                                    <span class="league-badge">{{ $match->short }}</span>
+                                    {{ $match->league }}
                                 </div>
-                                <span class="status">{{ $match['status'] }}</span>
+                                <span class="status">{{ $match->status }}</span>
                             </div>
 
                             <div class="match-main">
                                 <div class="team">
-                                    <div class="crest" style="background: {{ $match['home_color'] }};">{{ $match['home_short'] }}</div>
-                                    <div class="team-name">{{ $match['home'] }}</div>
+                                    <div class="crest" style="background: {{ $match->home_color }};">{{ $match->home_short }}</div>
+                                    <div class="team-name">{{ $match->home }}</div>
                                 </div>
 
                                 <div class="versus">
-                                    <span>{{ $match['date'] }}</span>
+                                    <span>{{ strtoupper($match->match_at->format('d M Y')) }}</span>
                                     <strong>VS</strong>
-                                    <span>{{ $match['time'] }}</span>
+                                    <span>{{ $match->match_at->format('H:i') }}</span>
                                 </div>
 
                                 <div class="team">
-                                    <div class="crest" style="background: {{ $match['away_color'] }};">{{ $match['away_short'] }}</div>
-                                    <div class="team-name">{{ $match['away'] }}</div>
+                                    <div class="crest" style="background: {{ $match->away_color }};">{{ $match->away_short }}</div>
+                                    <div class="team-name">{{ $match->away }}</div>
                                 </div>
                             </div>
 
                             <div class="match-meta">
-                                <span class="time">{{ $match['date'] }} • {{ $match['time'] }}</span>
-                                <span>{{ $match['stadium'] }}</span>
+                                <span class="time">{{ strtoupper($match->match_at->format('d M Y')) }} • {{ $match->match_at->format('H:i') }}</span>
+                                <span>{{ $match->stadium }}</span>
                             </div>
 
                             <div class="match-bottom">
-                                <div class="stadium">{{ $match['stadium'] }}</div>
+                                <div class="stadium">{{ $match->stadium }}</div>
                                 <div class="price-box">
                                     <span class="price-label">from</span>
-                                    <div class="price">฿{{ number_format((float) $match['price']) }} <small>THB</small></div>
+                                    <div class="price">฿{{ number_format((float) $match->price) }} <small>THB</small></div>
                                 </div>
                             </div>
 
@@ -744,7 +676,7 @@ $matches = [
                     @endforeach
                 </div>
 
-                @if (empty($matches))
+                @if ($matches->isEmpty())
                     <p class="empty-matches">ยังไม่มีแมตช์ที่เปิดจำหน่ายในขณะนี้</p>
                 @endif
             </div>
@@ -752,5 +684,3 @@ $matches = [
     </main>
 </body>
 </html>
-
-

@@ -45,6 +45,36 @@ class PasswordResetTest extends TestCase
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
+    public function test_local_log_mailer_shows_the_reset_link_on_the_forgot_password_screen(): void
+    {
+        if (! Features::enabled(Features::resetPasswords())) {
+            $this->markTestSkipped('Password updates are not enabled.');
+
+            return;
+        }
+
+        $this->app['env'] = 'local';
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+        config(['mail.default' => 'log']);
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        $response = $this->post('/forgot-password', [
+            'email' => $user->email,
+        ]);
+
+        $response->assertSessionHas('password_reset_link');
+
+        $resetLink = session('password_reset_link');
+        $this->assertStringContainsString('/reset-password/', $resetLink);
+        $this->assertStringContainsString('email='.urlencode($user->email), $resetLink);
+
+        $this->get('/forgot-password')
+            ->assertOk()
+            ->assertSee($resetLink);
+    }
+
     public function test_reset_password_screen_can_be_rendered(): void
     {
         if (! Features::enabled(Features::resetPasswords())) {
